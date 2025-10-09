@@ -49,4 +49,91 @@
   color: white;
   border-radius: 5px;
 }
+table tbody tr td{
+  border: 1px solid rgb(43, 43, 38);
+  padding: 5px;
+}
+table tbody tr td button{
+  padding: 0.5px;
+  font-size: 12px;
+}
+.button-container{
+  display: flex;
+  align-items: center;
+  justify-content: space-around;
+}
+.fa {
+  border: none;
+  background-color: none;
+  padding: 4px;
+  font-size: 12px;
+}
 
+.modal-container {
+  text-align: center;
+  margin-top: 100px;
+}
+
+.open-btn {
+  padding: 10px 20px;
+  background-color: #007bff;
+  color: white;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+}
+
+.open-btn:hover {
+  background-color: #0056b3;
+}
+
+/* Dark overlay behind modal */
+.modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.5);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+/* Modal box */
+.modal-box {
+  background-color: white;
+  padding: 25px 40px;
+  border-radius: 10px;
+  width: 300px;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
+  text-align: center;
+  animation: fadeIn 0.3s ease;
+}
+
+/* Close button */
+.close-btn {
+  margin-top: 15px;
+  padding: 8px 16px;
+  background-color: #dc3545;
+  color: white;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+}
+
+.close-btn:hover {
+  background-color: #a71d2a;
+}
+
+/* Smooth fade-in animation */
+@keyframes fadeIn {
+  from {
+    transform: scale(0.9);
+    opacity: 0;
+  }
+  to {
+    transform: scale(1);
+    opacity: 1;
+  }
+}
