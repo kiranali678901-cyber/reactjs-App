@@ -1,39 +1,63 @@
-import React from "react";
+import React, { useState } from "react";
 
 const Form = (props) => {
   const user = props.singleUser;
 
-  const handleChange=(e)=>{
-    console.log(e.target.value)
-    e.defaultPrevented
-    console.log(e.value)
-  }
+  const [form, setForm] = useState({
+    name: user.name || "",
+    email: user.email || "",
+    username: user.username || "",
+  });
+
+  const handleChange = (e) => {
+    const { name, value } = e.target;
+    setForm((prev) => ({ ...prev, [name]: value }));
+  };
+  const formSubmit = () => {
+    console.log(form, "form");
+  };
+
   return (
-    <form>
+    <form
+      style={{
+        display: "flex",
+        flexDirection: "column",
+        gap: "10px",
+        justifyContent: "flex-start",
+        width: "250px",
+      }}
+      onSubmit={formSubmit}
+    >
       <label htmlFor="name">Name</label>
       <input
         id="name"
+        name="name"
         type="text"
-        value={user.name}
-        onChange={(e) => handleChange(e)}
+        value={form.name}
+        onChange={handleChange}
       />
-      <br />
-      <label htmlFor="email">Name</label>
+
+      <label htmlFor="email">Your Email</label>
       <input
         id="email"
+        name="email"
         type="email"
-        value={user.email}
-        onChange={(e) => console.log(e)}
+        value={form.email}
+        onChange={handleChange}
       />
-      <br />
-       <label htmlFor="username">Name</label>
+
+      <label htmlFor="username">Your Username</label>
       <input
         id="username"
-        type="username"
-        value={user.email}
-        onChange={(e) => console.log(e)}
+        name="username"
+        type="text"
+        value={form.username}
+        onChange={handleChange}
       />
+
       <br />
+      
+      <button type="submit">Submit</button>
     </form>
   );
 };
