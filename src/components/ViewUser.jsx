@@ -65,7 +65,7 @@ export default function ViewUser(props) {
       {open && (
         <div className="modal-overlay">
           <div className="modal-box">
-            <Form  singleUser = {singleUser}/>
+            <Form  singleUser = {singleUser} setOpen ={setOpen}/>
             <button className="close-btn" onClick={() => setOpen(false)}>
               Close Modal
             </button>

@@ -3,6 +3,8 @@ import { useEffect, useState } from "react";
 // import Profile from "./components/Profile";
 import "./App.css";
 import UserList from "./components/userList";
+
+import { ToastContainer } from 'react-toastify';
 // import ProductList from "./components/ProductList";
 // import List from "./components/List";
 
@@ -27,6 +29,7 @@ function App() {
       {/* <ProductList  products={products}/> */}
       {/* <List/> */}
       <UserList/>
+      <ToastContainer />
     </>
   );
 }
