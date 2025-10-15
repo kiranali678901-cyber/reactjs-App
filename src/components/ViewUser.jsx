@@ -1,11 +1,13 @@
 import React, { useState } from "react";
 import UserList from "./userList";
 import Form from "./Form";
+import AddUser from "./AddUser";
 
 export default function ViewUser(props) {
   const list = props.user;
   const [open, setOpen] = useState(false);
   const [singleUser, setSingleUser] = useState({})
+  const [nform , setnForm] = useState(false)
 
   const deleteUser = async (id) => {
     try {
@@ -28,7 +30,7 @@ export default function ViewUser(props) {
   };
   return (
     <div>
-      <button>
+      <button onClick={() => setnForm(true)}>
         <i className="fa fa-user-plus"></i>New User
       </button>
       <table>
@@ -67,6 +69,16 @@ export default function ViewUser(props) {
           <div className="modal-box">
             <Form  singleUser = {singleUser} setOpen ={setOpen}/>
             <button className="close-btn" onClick={() => setOpen(false)}>
+              Close Modal
+            </button>
+          </div>
+        </div>
+      )}
+      {nform && (
+        <div className="modal-overlay">
+          <div className="modal-box">
+            <AddUser setnForm= {setnForm} fetchUser={props.fetchUser}/>
+            <button className="close-btn" onClick={() => setnForm(false)}>
               Close Modal
             </button>
           </div>

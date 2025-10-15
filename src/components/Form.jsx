@@ -1,63 +1,54 @@
-import React, { useState } from "react";
+import React from "react";
+import { useForm } from "react-hook-form";
 import { toast } from "react-toastify";
 
-const Form = (props) => {
-  const user = props.singleUser;
-
-  const [form, setForm] = useState({
-    name: user.name || "",
-    email: user.email || "",
-    username: user.username || "",
-    id: user.id,
+const Form = ({ singleUser, setOpen, fetchUser }) => {
+  const {
+    register,
+    handleSubmit,
+    formState: { errors, isSubmitting },
+    reset,
+  } = useForm({
+    defaultValues: {
+      name: singleUser.name || "",
+      email: singleUser.email || "",
+      username: singleUser.username || "",
+      id: singleUser.id,
+    },
   });
 
-  const handleChange = (e) => {
-    const { name, value } = e.target;
-    setForm((prev) => ({ ...prev, [name]: value }));
-  };
-  const formSubmit = async (event) => {
-    event.preventDefault();
-
-    const method = "PATCH";
+  // 🧩 onSubmit handler
+  const onSubmit = async (form) => {
     const url = `https://jsonplaceholder.typicode.com/users/${form.id}`;
-    if (form.name.length < 4 || form.name.length > 20) {
-      toast.warn("please enter number min 4 char and max 20");
-      return;
-    }
 
     try {
       const response = await fetch(url, {
-        method,
-        headers: {
-          "Content-Type": "application/json",
-        },
+        method: "PATCH",
+        headers: { "Content-Type": "application/json" },
         body: JSON.stringify(form),
       });
 
       if (response.ok) {
-        const responseData = await response.json();
-        toast.success("your request is updated");
+        const data = await response.json();
+        toast.success("User updated successfully!");
 
-        form.name = responseData.name;
-        form.email = responseData.email;
-        form.id = responseData.id;
-        form.username = responseData.username;
-        props.setOpen(false)
-        // You might want to clear the form or fetch the updated user list here
-        if (props.fetchUser) {
-          props.fetchUser();
-        }
+        // reset form with new values
+        reset(data);
+
+        // close modal and refresh user list
+        if (setOpen) setOpen(false);
+        if (fetchUser) fetchUser();
       } else {
-        toast.error("Server responded with an error:", response.status);
+        toast.error("Failed to update user");
       }
     } catch (error) {
-      toast.error("Network or other error:", error);
+      toast.error("Network error: " + error.message);
     }
-
   };
 
   return (
     <form
+      onSubmit={handleSubmit(onSubmit)}
       style={{
         display: "flex",
         flexDirection: "column",
@@ -65,38 +56,55 @@ const Form = (props) => {
         justifyContent: "flex-start",
         width: "250px",
       }}
-      onSubmit={formSubmit}
     >
+      {/* Name */}
       <label htmlFor="name">Name</label>
       <input
         id="name"
-        name="name"
-        type="text"
-        value={form.name}
-        onChange={handleChange}
+        {...register("name", {
+          required: "Name is required",
+          minLength: {
+            value: 4,
+            message: "Minimum 4 characters required",
+          },
+          maxLength: {
+            value: 20,
+            message: "Maximum 20 characters allowed",
+          },
+        })}
       />
+      {errors.name && <small style={{ color: "red" }}>{errors.name.message}</small>}
 
-      <label htmlFor="email">Your Email</label>
+      {/* Email */}
+      <label htmlFor="email">Email</label>
       <input
         id="email"
-        name="email"
         type="email"
-        value={form.email}
-        onChange={handleChange}
+        {...register("email", {
+          required: "Email is required",
+          pattern: {
+            value: /^[^\s@]+@[^\s@]+\.[^\s@]+$/,
+            message: "Invalid email format",
+          },
+        })}
       />
+      {errors.email && <small style={{ color: "red" }}>{errors.email.message}</small>}
 
-      <label htmlFor="username">Your Username</label>
+      {/* Username */}
+      <label htmlFor="username">Username</label>
       <input
         id="username"
-        name="username"
-        type="text"
-        value={form.username}
-        onChange={handleChange}
+        {...register("username", {
+          required: "Username is required",
+        })}
       />
+      {errors.username && (
+        <small style={{ color: "red" }}>{errors.username.message}</small>
+      )}
 
-      <br />
-
-      <button type="submit">Submit</button>
+      <button type="submit" disabled={isSubmitting}>
+        {isSubmitting ? "Saving..." : "Submit"}
+      </button>
     </form>
   );
 };
