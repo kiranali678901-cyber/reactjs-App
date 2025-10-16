@@ -1,85 +1,78 @@
 import React, { useState } from "react";
-import UserList from "./userList";
+import { useDispatch } from "react-redux";
+import { deleteUserById } from "../store/userSlice";
 import Form from "./Form";
 import AddUser from "./AddUser";
 
-export default function ViewUser(props) {
-  const list = props.user;
+export default function ViewUser({ user }) {
   const [open, setOpen] = useState(false);
-  const [singleUser, setSingleUser] = useState({})
-  const [nform , setnForm] = useState(false)
+  const [singleUser, setSingleUser] = useState({});
+  const [nform, setnForm] = useState(false);
 
-  const deleteUser = async (id) => {
-    try {
-      const kiran = await fetch(
-        `https://jsonplaceholder.typicode.com/users/${id}`,
-        { method: "DELETE" }
-      );
-      if (kiran.ok) {
-        props.fetchUser();
-      }
-    } catch (error) {
-      console.error("not deleted", error);
-    }
+  const dispatch = useDispatch();
+
+  const deleteUser = (id) => {
+    dispatch(deleteUserById(id));
   };
+
   const updateUser = (id) => {
-     const userToEdit = list.find((u) => u.id === id);
-     setSingleUser(userToEdit)
-     console.log(userToEdit, 'update')
+    const userToEdit = user.find((u) => u.id === id);
+    setSingleUser(userToEdit);
     setOpen(true);
   };
+
   return (
     <div>
       <button onClick={() => setnForm(true)}>
-        <i className="fa fa-user-plus"></i>New User
+        <i className="fa fa-user-plus"></i> New User
       </button>
       <table>
         <thead>
           <tr>
-          <th>ID</th>
-          <th>NAME</th>
-          <th>USERNAME</th>
-          <th>EMAIL</th>
-          <th>ACTIONS</th>
+            <th>ID</th>
+            <th>NAME</th>
+            <th>USERNAME</th>
+            <th>EMAIL</th>
+            <th>ACTIONS</th>
           </tr>
         </thead>
         <tbody>
-          {list.map((val, index) => (
-            <tr key = {val.id}>
+          {user.map((val) => (
+            <tr key={val.id}>
               <td>{val.id}</td>
               <td>{val.name}</td>
+              <td>{val.username}</td>
               <td>{val.email}</td>
-              <td>@{val.username}</td>
               <td className="button-container">
-              
                 <button onClick={() => deleteUser(val.id)}>
-                  <i className="fa fa-trash"></i>{" "}
+                  <i className="fa fa-trash"></i>
                 </button>
                 <button onClick={() => updateUser(val.id)}>
-                 
-                  <i className="fa fa-bus"></i>
+                  <i className="fa fa-edit"></i>
                 </button>
               </td>
             </tr>
           ))}
         </tbody>
       </table>
+
       {open && (
         <div className="modal-overlay">
           <div className="modal-box">
-            <Form  singleUser = {singleUser} setOpen ={setOpen}/>
+            <Form singleUser={singleUser} setOpen={setOpen} />
             <button className="close-btn" onClick={() => setOpen(false)}>
-              Close Modal
+              Close
             </button>
           </div>
         </div>
       )}
+
       {nform && (
         <div className="modal-overlay">
           <div className="modal-box">
-            <AddUser setnForm= {setnForm} fetchUser={props.fetchUser}/>
+            <AddUser setnForm={setnForm} />
             <button className="close-btn" onClick={() => setnForm(false)}>
-              Close Modal
+              Close
             </button>
           </div>
         </div>

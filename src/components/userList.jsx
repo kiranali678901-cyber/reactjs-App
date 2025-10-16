@@ -1,35 +1,21 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect } from "react";
+import { useDispatch, useSelector } from "react-redux";
+import { fetchUsers } from "../store/userSlice";
 import ViewUser from "./ViewUser";
 
 export default function UserList() {
-  const [user, setUser] = useState([]);
+  const dispatch = useDispatch();
+  const { list, loading } = useSelector((state) => state.users);
 
-  const fetchUser = async () => {
-    try {
-      const userapi = await fetch("https://jsonplaceholder.typicode.com/users");
-      const data = await userapi.json();
-      const filterdata = data.map((value) => {
-        return {
-          id: value.id,
-          name: value.name,
-          email:value.email,
-          username:value.username,
-        };
-      });
-
-      setUser(filterdata)
-
-      
-    } catch (error) {
-      console.error("error fetching data", error);
-    }
-  };
   useEffect(() => {
-    fetchUser();
-  }, []);
+    dispatch(fetchUsers());
+  }, [dispatch]);
 
-  return <div>
-    <ViewUser user = {user}  fetchUser= {fetchUser}/>
-  </div>;
+  if (loading) return <p>Loading users...</p>;
 
+  return (
+    <div>
+      <ViewUser user={list} />
+    </div>
+  );
 }
